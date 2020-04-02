@@ -13,13 +13,22 @@ class TestAddContact(unittest.TestCase):
 
     def test_add_contact(self):
         wd = self.wd
-        wd.get("http://localhost/addressbook/")
-        wd.find_element_by_name("user").clear()
-        wd.find_element_by_name("user").send_keys("admin")
-        wd.find_element_by_name("pass").clear()
-        wd.find_element_by_name("pass").send_keys("secret")
-        wd.find_element_by_xpath("//input[@value='Login']").click()
+        self.open_home_page(wd)
+        self.login(wd)
+        self.create_contact(wd)
+        self.return_to_home_page(wd)
+        self.logout(wd)
+
+    def logout(self, wd):
+        wd.find_element_by_link_text("Logout").click()
+
+    def return_to_home_page(self, wd):
+        wd.find_element_by_link_text("home page").click()
+
+    def create_contact(self, wd):
+        # init contact creation
         wd.find_element_by_link_text("add new").click()
+        # fill contact form with all possible fields
         wd.find_element_by_name("firstname").clear()
         wd.find_element_by_name("firstname").send_keys("first name")
         wd.find_element_by_name("middlename").clear()
@@ -65,9 +74,18 @@ class TestAddContact(unittest.TestCase):
         wd.find_element_by_name("phone2").send_keys("secondary home")
         wd.find_element_by_name("notes").clear()
         wd.find_element_by_name("notes").send_keys("secondary notes")
+        # submit contact creation
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
-        wd.find_element_by_link_text("home page").click()
-        wd.find_element_by_link_text("Logout").click()
+
+    def login(self, wd):
+        wd.find_element_by_name("user").clear()
+        wd.find_element_by_name("user").send_keys("admin")
+        wd.find_element_by_name("pass").clear()
+        wd.find_element_by_name("pass").send_keys("secret")
+        wd.find_element_by_xpath("//input[@value='Login']").click()
+
+    def open_home_page(self, wd):
+        wd.get("http://localhost/addressbook/")
 
     def is_element_present(self, how, what):
         try:
