@@ -12,24 +12,24 @@ def app(request):
 
 
 def test_add_contact_with_some_fields(app):
-    app.login(username="admin", password="secret")
+    app.session.login(username="admin", password="secret")
     app.create_contact(Contact(
         first_name="Anna",
         last_name="German",
         birthday_year="1936",
         birthday_month="February",
         birthday_day="14"))
-    app.logout()
+    app.session.logout()
 
 
 def test_add_contact_empty(app):
-    app.login(username="admin", password="secret")
+    app.session.login(username="admin", password="secret")
     app.create_contact(Contact())
-    app.logout()
+    app.session.logout()
 
 
 def test_add_contact_with_all_fields(app):
-    app.login(username="admin", password="secret")
+    app.session.login(username="admin", password="secret")
     app.create_contact(Contact(
         first_name="Andrzej",
         middle_name="Sebastian",
@@ -58,4 +58,4 @@ def test_add_contact_with_all_fields(app):
         secondary_telephone_home=r"+48 22 694-25-00",
         secondary_notes="nothing worth mentioning"
     ))
-    app.logout()
+    app.session.logout()
