@@ -13,7 +13,7 @@ def app(request):
 
 def test_add_contact_with_some_fields(app):
     app.session.login(username="admin", password="secret")
-    app.create_contact(Contact(
+    app.contact.create(Contact(
         first_name="Anna",
         last_name="German",
         birthday_year="1936",
@@ -24,13 +24,13 @@ def test_add_contact_with_some_fields(app):
 
 def test_add_contact_empty(app):
     app.session.login(username="admin", password="secret")
-    app.create_contact(Contact())
+    app.contact.create(Contact())
     app.session.logout()
 
 
 def test_add_contact_with_all_fields(app):
     app.session.login(username="admin", password="secret")
-    app.create_contact(Contact(
+    app.contact.create(Contact(
         first_name="Andrzej",
         middle_name="Sebastian",
         last_name="Duda",
