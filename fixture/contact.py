@@ -6,10 +6,6 @@ class ContactHelper:
     def __init__(self, app):
         self.app = app
 
-    def return_to_home_page(self):
-        wd = self.app.wd
-        wd.find_element_by_link_text("home page").click()
-
     def create(self, contact):
         wd = self.app.wd
         self.app.open_home_page()
@@ -66,3 +62,7 @@ class ContactHelper:
         # submit contact creation
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
         self.return_to_home_page()
+
+    def return_to_home_page(self):
+        wd = self.app.wd
+        wd.find_element_by_link_text("home page").click()
