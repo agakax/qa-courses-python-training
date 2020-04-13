@@ -23,6 +23,7 @@ def test_modify_selected_fields_in_first_contact(app):
     app.contact.modify_selected_fields_in_first_contact(Contact(
         first_name="Jan",
         last_name="Brzechwa",
+        photo_delete=True,
         address=r"Kresy Wschodnie",
         birthday_day="15",
         birthday_month="August",
