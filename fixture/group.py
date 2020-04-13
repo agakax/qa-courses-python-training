@@ -4,7 +4,9 @@ class GroupHelper:
         self.app = app
 
     def open_groups_page(self):
-        self.app.select.element_by_link_text(link_text="groups")
+        wd = self.app.wd
+        if not (wd.current_url.endswith("/group.php") and len(wd.find_elements_by_name("new")) > 0):
+            self.app.select.element_by_link_text(link_text="groups")
 
     def fill_group_form(self, name, header, footer):
         self.app.form.fill_form_element_by_its_name(field="group_name", value=name)
