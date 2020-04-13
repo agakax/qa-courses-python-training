@@ -119,5 +119,10 @@ class ContactHelper:
         wd.switch_to_alert().accept()
         self.app.open_home_page()
 
+    def count(self):
+        wd = self.app.wd
+        self.app.open_home_page()
+        return len(wd.find_elements_by_name("selected[]"))
+
     def return_to_home_page(self):
         self.app.select.element_by_link_text(link_text="home page")

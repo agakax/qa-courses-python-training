@@ -2,6 +2,8 @@ from model.contact import Contact
 
 
 def test_modify_first_contact(app):
+    if app.contact.count() == 0:
+        app.contact.create(Contact(first_name="test1"))
     app.contact.modify_first_contact(Contact(
         first_name="Lev",
         middle_name="Nikolayevich",
@@ -18,6 +20,8 @@ def test_modify_first_contact(app):
 
 
 def test_modify_first_contact_with_photo_deletion(app):
+    if app.contact.count() == 0:
+        app.contact.create(Contact(nickname="test2"))
     app.contact.modify_first_contact(Contact(
         first_name="Jan",
         last_name="Brzechwa",

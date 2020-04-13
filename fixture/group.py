@@ -41,5 +41,10 @@ class GroupHelper:
         self.app.select.element_by_name(name="delete")
         self.return_to_groups_page()
 
+    def count(self):
+        wd = self.app.wd
+        self.open_groups_page()
+        return len(wd.find_elements_by_name("selected[]"))
+
     def return_to_groups_page(self):
         self.app.select.element_by_link_text(link_text="group page")
