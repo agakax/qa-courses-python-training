@@ -41,7 +41,7 @@ class ContactHelper:
 
     def modify_first_contact(self, contact):
         self.app.open_home_page()
-        # select first contact and start editing it
+        # select first contact and open it
         self.app.select.element_by_xpath(field="img", field_type="title", field_value="Edit")
         # edit contact form
         self.app.form.fill_form_element_by_its_name(field="firstname", value=contact.first_name)
@@ -76,7 +76,7 @@ class ContactHelper:
 
     def modify_selected_fields_in_first_contact(self, contact):
         self.app.open_home_page()
-        # select first contact and start editing it
+        # select first contact and open it
         self.app.select.element_by_xpath(field="img", field_type="title", field_value="Edit")
         # edit contact form
         if contact.first_name != "":
