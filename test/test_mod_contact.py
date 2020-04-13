@@ -2,7 +2,6 @@ from model.contact import Contact
 
 
 def test_modify_first_contact(app):
-    app.session.login(username="admin", password="secret")
     app.contact.modify_first_contact(Contact(
         first_name="Lev",
         middle_name="Nikolayevich",
@@ -16,11 +15,9 @@ def test_modify_first_contact(app):
         anniversary_month="November",
         anniversary_year="1910",
     ))
-    app.session.logout()
 
 
 def test_modify_first_contact_with_photo_deletion(app):
-    app.session.login(username="admin", password="secret")
     app.contact.modify_first_contact(Contact(
         first_name="Jan",
         last_name="Brzechwa",
@@ -33,4 +30,3 @@ def test_modify_first_contact_with_photo_deletion(app):
         anniversary_month="July",
         anniversary_year="1966",
     ))
-    app.session.logout()

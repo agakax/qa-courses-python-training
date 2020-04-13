@@ -3,24 +3,19 @@ from model.contact import Contact
 
 
 def test_add_contact_with_some_fields(app):
-    app.session.login(username="admin", password="secret")
     app.contact.create(Contact(
         first_name="Anna",
         last_name="German",
         birthday_year="1936",
         birthday_month="February",
         birthday_day="14"))
-    app.session.logout()
 
 
 def test_add_contact_empty(app):
-    app.session.login(username="admin", password="secret")
     app.contact.create(Contact())
-    app.session.logout()
 
 
 def test_add_contact_with_all_fields(app):
-    app.session.login(username="admin", password="secret")
     app.contact.create(Contact(
         first_name="Andrzej",
         middle_name="Sebastian",
@@ -49,4 +44,3 @@ def test_add_contact_with_all_fields(app):
         secondary_telephone_home=r"+48 22 694-25-00",
         secondary_notes="nothing worth mentioning"
     ))
-    app.session.logout()
