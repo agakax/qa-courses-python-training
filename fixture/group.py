@@ -4,42 +4,40 @@ class GroupHelper:
         self.app = app
 
     def open_groups_page(self):
-        wd = self.app.wd
-        wd.find_element_by_link_text("groups").click()
+        self.app.select.element_by_link_text(link_text="groups")
 
     def create(self, group):
-        wd = self.app.wd
         self.open_groups_page()
         # init group creation
-        wd.find_element_by_name("new").click()
+        self.app.select.element_by_name(name="new")
         # fill group form
         self.app.form.fill_form_element_by_its_name(field="group_name", value=group.name)
         self.app.form.fill_form_element_by_its_name(field="group_header", value=group.header)
         self.app.form.fill_form_element_by_its_name(field="group_footer", value=group.footer)
         # submit group creation
-        wd.find_element_by_name("submit").click()
+        self.app.select.element_by_name(name="submit")
         self.return_to_groups_page()
 
     def modify_first_group(self, group):
-        wd = self.app.wd
         self.open_groups_page()
         # find first group and enter it
-        wd.find_element_by_name("selected[]").click()
-        wd.find_element_by_xpath("(//input[@name='edit'])[2]").click()
+        self.app.select.element_by_name(name="selected[]")
+        self.app.select.element_by_xpath(field="input", field_type="name", field_value="edit",
+                                         field_occurrence="[2]")
         # edit group form
         self.app.form.fill_form_element_by_its_name(field="group_name", value=group.name)
         self.app.form.fill_form_element_by_its_name(field="group_header", value=group.header)
         self.app.form.fill_form_element_by_its_name(field="group_footer", value=group.footer)
         # submit group creation
-        wd.find_element_by_name("update").click()
+        self.app.select.element_by_name(name="update")
         self.return_to_groups_page()
 
     def modify_selected_fields_in_first_group(self, group):
-        wd = self.app.wd
         self.open_groups_page()
         # find first group and enter it
-        wd.find_element_by_name("selected[]").click()
-        wd.find_element_by_xpath("(//input[@name='edit'])[2]").click()
+        self.app.select.element_by_name(name="selected[]")
+        self.app.select.element_by_xpath(field="input", field_type="name", field_value="edit",
+                                         field_occurrence="[2]")
         # edit group form
         if group.name != "":
             self.app.form.fill_form_element_by_its_name(field="group_name", value=group.name)
@@ -48,18 +46,16 @@ class GroupHelper:
         if group.footer != "":
             self.app.form.fill_form_element_by_its_name(field="group_footer", value=group.footer)
         # submit group creation
-        wd.find_element_by_name("update").click()
+        self.app.select.element_by_name(name="update")
         self.return_to_groups_page()
 
     def delete_first_group(self):
-        wd = self.app.wd
         self.open_groups_page()
         # select first group
-        wd.find_element_by_name("selected[]").click()
+        self.app.select.element_by_name(name="selected[]")
         # submit deletion
-        wd.find_element_by_name("delete").click()
+        self.app.select.element_by_name(name="delete")
         self.return_to_groups_page()
 
     def return_to_groups_page(self):
-        wd = self.app.wd
-        wd.find_element_by_link_text("group page").click()
+        self.app.select.element_by_link_text(link_text="group page")

@@ -4,10 +4,9 @@ class ContactHelper:
         self.app = app
 
     def create(self, contact):
-        wd = self.app.wd
         self.app.open_home_page()
         # init contact creation
-        wd.find_element_by_link_text("add new").click()
+        self.app.select.element_by_link_text(link_text="add new")
         # fill contact form with all possible fields
         self.app.form.fill_form_element_by_its_name(field="firstname", value=contact.first_name)
         self.app.form.fill_form_element_by_its_name(field="middlename", value=contact.middle_name)
@@ -36,14 +35,14 @@ class ContactHelper:
         self.app.form.fill_form_element_by_its_name(field="phone2", value=contact.secondary_telephone_home)
         self.app.form.fill_form_element_by_its_name(field="notes", value=contact.secondary_notes)
         # submit contact creation
-        wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
+        self.app.select.element_by_xpath(field="input", field_type="name", field_value="submit",
+                                         field_occurrence="[2]")
         self.return_to_home_page()
 
     def modify_first_contact(self, contact):
-        wd = self.app.wd
         self.app.open_home_page()
         # select first contact and start editing it
-        wd.find_element_by_xpath("(//img[@title='Edit'])").click()
+        self.app.select.element_by_xpath(field="img", field_type="title", field_value="Edit")
         # edit contact form
         self.app.form.fill_form_element_by_its_name(field="firstname", value=contact.first_name)
         self.app.form.fill_form_element_by_its_name(field="middlename", value=contact.middle_name)
@@ -71,14 +70,14 @@ class ContactHelper:
         self.app.form.fill_form_element_by_its_name(field="phone2", value=contact.secondary_telephone_home)
         self.app.form.fill_form_element_by_its_name(field="notes", value=contact.secondary_notes)
         # submit contact modification
-        wd.find_element_by_xpath("(//input[@name='update'])[2]").click()
+        self.app.select.element_by_xpath(field="input", field_type="name", field_value="update",
+                                         field_occurrence="[2]")
         self.return_to_home_page()
 
     def modify_selected_fields_in_first_contact(self, contact):
-        wd = self.app.wd
         self.app.open_home_page()
         # select first contact and start editing it
-        wd.find_element_by_xpath("(//img[@title='Edit'])").click()
+        self.app.select.element_by_xpath(field="img", field_type="title", field_value="Edit")
         # edit contact form
         if contact.first_name != "":
             self.app.form.fill_form_element_by_its_name(field="firstname", value=contact.first_name)
@@ -131,19 +130,19 @@ class ContactHelper:
         if contact.secondary_notes != "":
             self.app.form.fill_form_element_by_its_name(field="notes", value=contact.secondary_notes)
         # submit contact modification
-        wd.find_element_by_xpath("(//input[@name='update'])[2]").click()
+        self.app.select.element_by_xpath(field="input", field_type="name", field_value="update",
+                                         field_occurrence="[2]")
         self.return_to_home_page()
 
     def delete_first_contact(self):
         wd = self.app.wd
         self.app.open_home_page()
         # select first contact
-        wd.find_element_by_name("selected[]").click()
+        self.app.select.element_by_name(name="selected[]")
         # submit deletion
-        wd.find_element_by_xpath("//input[@value='Delete']").click()
+        self.app.select.element_by_xpath(field="input", field_type="value", field_value="Delete")
         wd.switch_to_alert().accept()
         self.app.open_home_page()
 
     def return_to_home_page(self):
-        wd = self.app.wd
-        wd.find_element_by_link_text("home page").click()
+        self.app.select.element_by_link_text(link_text="home page")
