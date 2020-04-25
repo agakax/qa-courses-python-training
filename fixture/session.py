@@ -1,3 +1,6 @@
+import time
+
+
 class SessionHelper:
 
     def __init__(self, app):
@@ -12,8 +15,6 @@ class SessionHelper:
     def logout(self):
         wd = self.app.wd
         self.app.select.element_by_link_text(link_text="Logout")
-        # waiting for application to logout
-        wd.find_element_by_name("user")
 
     def ensure_login(self, username, password):
         if self.is_logged_in():
@@ -33,4 +34,5 @@ class SessionHelper:
 
     def is_logged_in_as(self, username):
         wd = self.app.wd
+        time.sleep(1)
         return wd.find_element_by_xpath("(//div[@id='top']/form/b)[1]").text == "(" + username + ")"
