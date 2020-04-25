@@ -1,3 +1,4 @@
+from selenium.common.exceptions import NoSuchElementException
 import time
 
 
@@ -34,5 +35,30 @@ class SessionHelper:
 
     def is_logged_in_as(self, username):
         wd = self.app.wd
-        time.sleep(1)
-        return wd.find_element_by_xpath("(//div[@id='top']/form/b)[1]").text == "(" + username + ")"
+        string = "(//div[@id='top']/form/b)[1]"
+        self.wait_for_element(element="xpath", value=string)
+        return wd.find_element_by_xpath(string).text == "(" + username + ")"
+
+    def wait_for_element(self, element, value):
+        # wait up to 30 sec for element presence
+        for i in range(1, 300):
+            if self.check_exists(element=element, value=value):
+                return
+            else:
+                time.sleep(0.01)
+        print("Element %s not found" % str(element))
+
+    def check_exists(self, element, value):
+        wd = self.app.wd
+        try:
+            if element == "xpath":
+                wd.find_element_by_xpath(value)
+            if element == "name":
+                wd.find_element_by_name(value)
+            if element == "css_selector":
+                wd.find_element_by_css_selector(value)
+            if element == "link_text":
+                wd.find_element_by_link_text(value)
+        except NoSuchElementException:
+            return False
+        return True
