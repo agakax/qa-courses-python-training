@@ -9,6 +9,7 @@ class FillingFormHelper:
     def fill_form_element_by_its_name(self, field, value):
         wd = self.app.wd
         if value is not None:
+            self.app.select.wait_for_element(element="name", value=field)
             wd.find_element_by_name(field).click()
             wd.find_element_by_name(field).clear()
             wd.find_element_by_name(field).send_keys(value)
@@ -16,11 +17,14 @@ class FillingFormHelper:
     def fill_form_element_by_dropdown_list(self, field, value):
         wd = self.app.wd
         if value is not None:
+            self.app.select.wait_for_element(element="name", value=field)
             Select(wd.find_element_by_name(field)).select_by_visible_text(value)
 
     def fill_form_photo(self, field, value, delete, delete_field="delete_photo"):
         wd = self.app.wd
         if value is not None:
+            self.app.select.wait_for_element(element="name", value=field)
             wd.find_element_by_name(field).send_keys(value)
         if delete:
+            self.app.select.wait_for_element(element="name", value=delete_field)
             wd.find_element_by_name(delete_field).click()

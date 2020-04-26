@@ -122,7 +122,9 @@ class ContactHelper:
     def count(self):
         wd = self.app.wd
         self.app.open_home_page()
-        return len(wd.find_elements_by_name("selected[]"))
+        string = "selected[]"
+        self.app.select.wait_for_element(element="name", value=string)
+        return len(wd.find_elements_by_name(string))
 
     def return_to_home_page(self):
         self.app.select.element_by_link_text(link_text="home page")

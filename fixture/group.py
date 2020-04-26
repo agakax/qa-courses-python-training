@@ -8,7 +8,9 @@ class GroupHelper:
 
     def open_groups_page(self):
         wd = self.app.wd
-        if not (wd.current_url.endswith("/group.php") and len(wd.find_elements_by_name("new")) > 0):
+        string = "new"
+        self.app.select.wait_for_element(element="name", value=string)
+        if not (wd.current_url.endswith("/group.php") and len(wd.find_elements_by_name(string)) > 0):
             self.app.select.element_by_link_text(link_text="groups")
 
     def fill_group_form(self, name, header, footer):
@@ -20,7 +22,9 @@ class GroupHelper:
         wd = self.app.wd
         self.open_groups_page()
         groups = []
-        for element in wd.find_elements_by_css_selector("span.group"):
+        string = "span.group"
+        self.app.select.wait_for_element(element="css_selector", value=string)
+        for element in wd.find_elements_by_css_selector(string):
             text = element.text
             id_group = element.find_element_by_name("selected[]").get_attribute("value")
             groups.append(Group(name=text, id_group=id_group))
@@ -59,7 +63,9 @@ class GroupHelper:
     def count(self):
         wd = self.app.wd
         self.open_groups_page()
-        return len(wd.find_elements_by_name("selected[]"))
+        string = "selected[]"
+        self.app.select.wait_for_element(element="name", value=string)
+        return len(wd.find_elements_by_name(string))
 
     def return_to_groups_page(self):
         self.app.select.element_by_link_text(link_text="group page")
