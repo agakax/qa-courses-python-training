@@ -5,7 +5,7 @@ class Contact:
                  telephone_mobile=None, telephone_work=None, telephone_fax=None, email=None, email2=None, email3=None,
                  homepage=None, birthday_day=None, birthday_month=None, birthday_year=None, anniversary_day=None,
                  anniversary_month=None, anniversary_year=None, group=None, secondary_address=None,
-                 secondary_telephone_home=None, secondary_notes=None):
+                 secondary_telephone_home=None, secondary_notes=None, id_contact=None):
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
@@ -33,3 +33,4 @@ class Contact:
         self.secondary_address = secondary_address
         self.secondary_telephone_home = secondary_telephone_home
         self.secondary_notes = secondary_notes
+        self.id = id_contact

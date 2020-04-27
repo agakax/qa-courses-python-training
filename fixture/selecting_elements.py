@@ -27,7 +27,7 @@ class SelectingElementsHelper:
 
     def wait_for_element(self, element, value):
         # wait up to 30 sec for element presence
-        for i in range(1, 300):
+        for i in range(1, 3000):
             if self.check_exists(element=element, value=value):
                 return
             else:

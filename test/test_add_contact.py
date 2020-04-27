@@ -3,19 +3,26 @@ from model.contact import Contact
 
 
 def test_add_contact_with_some_fields(app):
+    old_contacts = app.contact.get_contact_list()
     app.contact.create(Contact(
         first_name="Anna",
         last_name="German",
         birthday_year="1936",
         birthday_month="February",
         birthday_day="14"))
+    new_contacts = app.contact.get_contact_list()
+    assert len(old_contacts) + 1 == len(new_contacts)
 
 
 def test_add_contact_empty(app):
+    old_contacts = app.contact.get_contact_list()
     app.contact.create(Contact())
+    new_contacts = app.contact.get_contact_list()
+    assert len(old_contacts) + 1 == len(new_contacts)
 
 
 def test_add_contact_with_all_fields(app):
+    old_contacts = app.contact.get_contact_list()
     app.contact.create(Contact(
         first_name="Andrzej",
         middle_name="Sebastian",
@@ -42,5 +49,6 @@ def test_add_contact_with_all_fields(app):
         group="[none]",
         secondary_address=r"Wiejska 4/6/8, 00-902 Warszawa",
         secondary_telephone_home=r"+48 22 694-25-00",
-        secondary_notes="nothing worth mentioning"
-    ))
+        secondary_notes="nothing worth mentioning"))
+    new_contacts = app.contact.get_contact_list()
+    assert len(old_contacts) + 1 == len(new_contacts)
