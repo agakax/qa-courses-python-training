@@ -141,6 +141,7 @@ class ContactHelper:
         # submit deletion
         self.app.select.element_by_xpath(field="input", field_type="value", field_value="Delete")
         wd.switch_to_alert().accept()
+        # waiting for it to be sure deleting went fully
         wd.find_element_by_css_selector("div.msgbox")
         self.app.open_home_page()
         self.contact_cache = None
