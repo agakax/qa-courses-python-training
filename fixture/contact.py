@@ -75,6 +75,7 @@ class ContactHelper:
         self.app.select.element_by_xpath(field="input", field_type="name", field_value="submit",
                                          field_occurrence="[2]")
         self.return_to_home_page()
+        self.contact_cache = None
 
     def modify_first_contact(self, contact):
         self.app.open_home_page()
@@ -112,22 +113,25 @@ class ContactHelper:
         self.app.select.element_by_xpath(field="input", field_type="name", field_value="update",
                                          field_occurrence="[2]")
         self.return_to_home_page()
+        self.contact_cache = None
+
+    contact_cache = None
 
     def get_contact_list(self):
-        wd = self.app.wd
-        self.app.open_home_page()
-        contacts = []
-        string = "//table[@id='maintable']/tbody/tr[@name='entry']"
-        time.sleep(5)
-        for element in wd.find_elements_by_xpath(string):
-            title = element.find_element_by_xpath("td[1]/input[@name='selected[]']").get_attribute("title")[8:-1]
-            first_name = element.find_element_by_xpath("td[3]").text
-            last_name = element.find_element_by_xpath("td[2]").text
-            address = element.find_element_by_xpath("td[4]").text
-            id_contact = element.find_element_by_xpath("td[1]/input[@name='selected[]']").get_attribute("id")
-            contacts.append(Contact(first_name=first_name, last_name=last_name, title=title, address=address,
-                                    id_contact=id_contact))
-        return contacts
+        if self.contact_cache is None:
+            wd = self.app.wd
+            self.app.open_home_page()
+            self.contact_cache = []
+            string = "//table[@id='maintable']/tbody/tr[@name='entry']"
+            for element in wd.find_elements_by_xpath(string):
+                title = element.find_element_by_xpath("td[1]/input[@name='selected[]']").get_attribute("title")[8:-1]
+                first_name = element.find_element_by_xpath("td[3]").text
+                last_name = element.find_element_by_xpath("td[2]").text
+                address = element.find_element_by_xpath("td[4]").text
+                id_contact = element.find_element_by_xpath("td[1]/input[@name='selected[]']").get_attribute("id")
+                self.contact_cache.append(Contact(first_name=first_name, last_name=last_name, title=title,
+                                                  address=address, id_contact=id_contact))
+        return list(self.contact_cache)
 
     def delete_first_contact(self):
         wd = self.app.wd
@@ -137,7 +141,9 @@ class ContactHelper:
         # submit deletion
         self.app.select.element_by_xpath(field="input", field_type="value", field_value="Delete")
         wd.switch_to_alert().accept()
+        wd.find_element_by_css_selector("div.msgbox")
         self.app.open_home_page()
+        self.contact_cache = None
 
     def count(self):
         wd = self.app.wd
