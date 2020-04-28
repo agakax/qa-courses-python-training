@@ -9,7 +9,6 @@ class GroupHelper:
     def open_groups_page(self):
         wd = self.app.wd
         string = "new"
-        self.app.select.wait_for_element(element="name", value=string)
         if not (wd.current_url.endswith("/group.php") and len(wd.find_elements_by_name(string)) > 0):
             self.app.select.element_by_link_text(link_text="groups")
 
@@ -23,7 +22,6 @@ class GroupHelper:
         self.open_groups_page()
         groups = []
         string = "span.group"
-        self.app.select.wait_for_element(element="css_selector", value=string)
         for element in wd.find_elements_by_css_selector(string):
             text = element.text
             id_group = element.find_element_by_name("selected[]").get_attribute("value")
@@ -64,7 +62,6 @@ class GroupHelper:
         wd = self.app.wd
         self.open_groups_page()
         string = "selected[]"
-        self.app.select.wait_for_element(element="name", value=string)
         return len(wd.find_elements_by_name(string))
 
     def return_to_groups_page(self):

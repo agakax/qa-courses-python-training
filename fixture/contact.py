@@ -118,7 +118,6 @@ class ContactHelper:
         self.app.open_home_page()
         contacts = []
         string = "//table[@id='maintable']/tbody/tr[@name='entry']"
-        self.app.select.wait_for_element(element="xpath", value=string)
         time.sleep(5)
         for element in wd.find_elements_by_xpath(string):
             title = element.find_element_by_xpath("td[1]/input[@name='selected[]']").get_attribute("title")[8:-1]
@@ -144,7 +143,6 @@ class ContactHelper:
         wd = self.app.wd
         self.app.open_home_page()
         string = "selected[]"
-        self.app.select.wait_for_element(element="name", value=string)
         return len(wd.find_elements_by_name(string))
 
     def return_to_home_page(self):
