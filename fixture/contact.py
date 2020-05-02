@@ -73,14 +73,17 @@ class ContactHelper:
                                secondary_notes=contact.secondary_notes)
         # submit contact creation
         self.app.select.element_by_xpath(field="input", field_type="name", field_value="submit",
-                                         field_occurrence="[2]")
+                                         field_occurrence=2)
         self.return_to_home_page()
         self.contact_cache = None
 
     def modify_first_contact(self, contact):
+        self.modify_contact_by_index(index=0, contact=contact)
+
+    def modify_contact_by_index(self, index, contact):
         self.app.open_home_page()
-        # select first contact and open it
-        self.app.select.element_by_xpath(field="img", field_type="title", field_value="Edit")
+        # select specific contact and open it (occurrences are counted from 0, xpath is counted from 1)
+        self.app.select.element_by_xpath(field="img", field_type="title", field_value="Edit", field_occurrence=index+1)
         # edit contact form
         self.fill_contact_form(first_name=contact.first_name,
                                middle_name=contact.middle_name,
@@ -111,7 +114,7 @@ class ContactHelper:
                                secondary_notes=contact.secondary_notes)
         # submit contact modification
         self.app.select.element_by_xpath(field="input", field_type="name", field_value="update",
-                                         field_occurrence="[2]")
+                                         field_occurrence=2)
         self.return_to_home_page()
         self.contact_cache = None
 
@@ -134,10 +137,13 @@ class ContactHelper:
         return list(self.contact_cache)
 
     def delete_first_contact(self):
+        self.delete_contact_by_index(0)
+
+    def delete_contact_by_index(self, index):
         wd = self.app.wd
         self.app.open_home_page()
-        # select first contact
-        self.app.select.element_by_name(name="selected[]")
+        # select specific contact
+        self.app.select.element_by_name_by_index(name="selected[]", index=index)
         # submit deletion
         self.app.select.element_by_xpath(field="input", field_type="value", field_value="Delete")
         wd.switch_to_alert().accept()

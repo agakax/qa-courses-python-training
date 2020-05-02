@@ -11,6 +11,10 @@ class SelectingElementsHelper:
         wd = self.app.wd
         wd.find_element_by_name(name).click()
 
+    def element_by_name_by_index(self, name, index):
+        wd = self.app.wd
+        wd.find_elements_by_name(name)[index].click()
+
     def element_by_link_text(self, link_text):
         wd = self.app.wd
         wd.find_element_by_link_text(link_text).click()
@@ -19,5 +23,5 @@ class SelectingElementsHelper:
         wd = self.app.wd
         xpath = "(//" + field + "[@" + field_type + "='" + field_value + "'])"
         if field_occurrence is not None:
-            xpath = xpath + field_occurrence
+            xpath = xpath + "[" + str(field_occurrence) + "]"
         wd.find_element_by_xpath(xpath).click()
