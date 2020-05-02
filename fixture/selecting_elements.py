@@ -21,7 +21,7 @@ class SelectingElementsHelper:
 
     def element_by_xpath(self, field, field_type, field_value, field_occurrence=None):
         wd = self.app.wd
-        xpath = "(//" + field + "[@" + field_type + "='" + field_value + "'])"
+        xpath = "(//%s[@%s='%s'])" % (field, field_type, field_value)
         if field_occurrence is not None:
-            xpath = xpath + "[" + str(field_occurrence) + "]"
+            xpath = "%s[%s]" % (xpath, str(field_occurrence))
         wd.find_element_by_xpath(xpath).click()
