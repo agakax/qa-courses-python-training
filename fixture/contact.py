@@ -1,5 +1,5 @@
+import re
 from model.contact import Contact
-import time
 
 
 class ContactHelper:
@@ -83,7 +83,8 @@ class ContactHelper:
     def modify_contact_by_index(self, index, contact):
         self.app.open_home_page()
         # select specific contact and open it (occurrences are counted from 0, xpath is counted from 1)
-        self.app.select.element_by_xpath(field="img", field_type="title", field_value="Edit", field_occurrence=index+1)
+        self.app.select.element_by_xpath(field="img", field_type="title", field_value="Edit",
+                                         field_occurrence=index + 1)
         # edit contact form
         self.fill_contact_form(first_name=contact.first_name,
                                middle_name=contact.middle_name,
@@ -120,6 +121,18 @@ class ContactHelper:
 
     contact_cache = None
 
+    def open_contact_details_page(self, index):
+        self.app.open_home_page()
+        # as normally we're indexing from 0, and xpath is indexing from 1 I made such change
+        self.app.select.element_by_xpath(field="img", field_type="title", field_value="Details",
+                                         field_occurrence=index + 1)
+
+    def open_contact_edit_page(self, index):
+        self.app.open_home_page()
+        # as normally we're indexing from 0, and xpath is indexing from 1 I made such change
+        self.app.select.element_by_xpath(field="img", field_type="title", field_value="Edit",
+                                         field_occurrence=index + 1)
+
     def get_contact_list(self):
         if self.contact_cache is None:
             wd = self.app.wd
@@ -127,14 +140,103 @@ class ContactHelper:
             self.contact_cache = []
             string = "//table[@id='maintable']/tbody/tr[@name='entry']"
             for element in wd.find_elements_by_xpath(string):
+                # title: first name, last name
                 title = element.find_element_by_xpath("td[1]/input[@name='selected[]']").get_attribute("title")[8:-1]
                 first_name = element.find_element_by_xpath("td[3]").text
                 last_name = element.find_element_by_xpath("td[2]").text
                 address = element.find_element_by_xpath("td[4]").text
+                all_emails = element.find_element_by_xpath("td[5]").text.splitlines()
+                all_phones = element.find_element_by_xpath("td[6]").text.splitlines()
                 id_contact = element.find_element_by_xpath("td[1]/input[@name='selected[]']").get_attribute("id")
-                self.contact_cache.append(Contact(first_name=first_name, last_name=last_name, title=title,
-                                                  address=address, id_contact=id_contact))
+                self.contact_cache.append(Contact(first_name=first_name,
+                                                  last_name=last_name,
+                                                  title=title,
+                                                  address=address,
+                                                  email=all_emails[0],
+                                                  email2=all_emails[1],
+                                                  email3=all_emails[2],
+                                                  telephone_home=all_phones[0],
+                                                  telephone_mobile=all_phones[1],
+                                                  telephone_work=all_phones[2],
+                                                  secondary_telephone_home=all_phones[3],
+                                                  id_contact=id_contact))
         return list(self.contact_cache)
+
+    def get_contact_info_from_details_page(self, index):
+        wd = self.app.wd
+        self.open_contact_details_page(index=index)
+        text = wd.find_element_by_id("content").text
+        # title: first name, second name, last name
+        title = wd.find_element_by_xpath("//div[@id='content']/b")
+        telephone_home = re.search("H: (.*)", text).group(1)
+        telephone_mobile = re.search("M: (.*)", text).group(1)
+        telephone_work = re.search("W: (.*)", text).group(1)
+        telephone_fax = re.search("F: (.*)", text).group(1)
+        secondary_telephone_home = re.search("P: (.*)", text).group(1)
+        homepage = re.search('Homepage:\n(.*)', text).group(1)
+        id_contact = wd.find_element_by_name("id").get_attribute("value")
+        return Contact(title=title,
+                       telephone_home=telephone_home,
+                       telephone_mobile=telephone_mobile,
+                       telephone_work=telephone_work,
+                       telephone_fax=telephone_fax,
+                       secondary_telephone_home=secondary_telephone_home,
+                       homepage=homepage,
+                       id_contact=id_contact)
+
+    def get_contact_info_from_edit_page(self, index):
+        wd = self.app.wd
+        self.open_contact_edit_page(index=index)
+        first_name = wd.find_element_by_name("firstname").get_attribute("value")
+        middle_name = wd.find_element_by_name("middlename").get_attribute("value")
+        last_name = wd.find_element_by_name("lastname").get_attribute("value")
+        nickname = wd.find_element_by_name("nickname").get_attribute("value")
+        title = wd.find_element_by_name("title").get_attribute("value")
+        company = wd.find_element_by_name("company").get_attribute("value")
+        address = wd.find_element_by_name("address").text
+        telephone_home = wd.find_element_by_name("home").get_attribute("value")
+        telephone_mobile = wd.find_element_by_name("mobile").get_attribute("value")
+        telephone_work = wd.find_element_by_name("work").get_attribute("value")
+        telephone_fax = wd.find_element_by_name("fax").get_attribute("value")
+        email = wd.find_element_by_name("email").get_attribute("value")
+        email2 = wd.find_element_by_name("email2").get_attribute("value")
+        email3 = wd.find_element_by_name("email3").get_attribute("value")
+        homepage = wd.find_element_by_name("homepage").get_attribute("value")
+        birthday_day = wd.find_elements_by_name("bday")[0].text.splitlines()[0]
+        birthday_month = wd.find_elements_by_name("bmonth")[0].text.splitlines()[0]
+        birthday_year = wd.find_element_by_name("byear").get_attribute("value")
+        anniversary_day = wd.find_elements_by_name("aday")[0].text.splitlines()[0]
+        anniversary_month = wd.find_elements_by_name("amonth")[0].text.splitlines()[0]
+        anniversary_year = wd.find_element_by_name("ayear").get_attribute("value")
+        secondary_address = wd.find_element_by_name("address2").text
+        secondary_telephone_home = wd.find_element_by_name("phone2").get_attribute("value")
+        secondary_notes = wd.find_element_by_name("notes").text
+        id_contact = wd.find_element_by_name("id").get_attribute("value")
+        return Contact(first_name=first_name,
+                       middle_name=middle_name,
+                       last_name=last_name,
+                       nickname=nickname,
+                       title=title,
+                       company=company,
+                       address=address,
+                       telephone_home=telephone_home,
+                       telephone_mobile=telephone_mobile,
+                       telephone_work=telephone_work,
+                       telephone_fax=telephone_fax,
+                       email=email,
+                       email2=email2,
+                       email3=email3,
+                       homepage=homepage,
+                       birthday_day=birthday_day,
+                       birthday_month=birthday_month,
+                       birthday_year=birthday_year,
+                       anniversary_day=anniversary_day,
+                       anniversary_month=anniversary_month,
+                       anniversary_year=anniversary_year,
+                       secondary_address=secondary_address,
+                       secondary_telephone_home=secondary_telephone_home,
+                       secondary_notes=secondary_notes,
+                       id_contact=id_contact)
 
     def delete_first_contact(self):
         self.delete_contact_by_index(0)
