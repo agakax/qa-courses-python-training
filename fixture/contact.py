@@ -145,30 +145,46 @@ class ContactHelper:
                 first_name = element.find_element_by_xpath("td[3]").text
                 last_name = element.find_element_by_xpath("td[2]").text
                 address = element.find_element_by_xpath("td[4]").text
-                all_emails = element.find_element_by_xpath("td[5]").text
-                all_phones = element.find_element_by_xpath("td[6]").text
+                emails_all = element.find_element_by_xpath("td[5]").text
+                telephones_all = element.find_element_by_xpath("td[6]").text
                 id_contact = element.find_element_by_xpath("td[1]/input[@name='selected[]']").get_attribute("id")
                 self.contact_cache.append(Contact(first_name=first_name,
                                                   last_name=last_name,
                                                   title=title,
                                                   address=address,
-                                                  emails_all_from_home_page=all_emails,
-                                                  telephones_all_from_home_page=all_phones,
+                                                  emails_all=emails_all,
+                                                  telephones_all=telephones_all,
                                                   id_contact=id_contact))
         return list(self.contact_cache)
+
+    def if_regex_exist(self, result):
+        if result:
+            return result.group(1)
+        else:
+            return ""
 
     def get_contact_info_from_details_page(self, index):
         wd = self.app.wd
         self.open_contact_details_page(index=index)
         text = wd.find_element_by_id("content").text
+        emails_all = []
+        homepage = ""
+        group_id = ""
+        for element in wd.find_element_by_id("content").find_elements_by_css_selector("a"):
+            link = element.get_attribute("href")
+            if link.startswith("mailto:"):
+                emails_all.append(link[7:])
+            elif link.startswith("http://localhost/addressbook/index.php?group="):
+                group_id = link[45:]
+            else:
+                homepage = link
         # title: first name, second name, last name
-        title = wd.find_element_by_xpath("//div[@id='content']/b")
-        telephone_home = re.search("H: (.*)", text).group(1)
-        telephone_mobile = re.search("M: (.*)", text).group(1)
-        telephone_work = re.search("W: (.*)", text).group(1)
-        telephone_fax = re.search("F: (.*)", text).group(1)
-        secondary_telephone_home = re.search("P: (.*)", text).group(1)
-        homepage = re.search('Homepage:\n(.*)', text).group(1)
+        title = wd.find_element_by_xpath("//div[@id='content']/b").text
+        telephone_home = self.if_regex_exist(re.search("H: (.*)", text))
+        telephone_mobile = self.if_regex_exist(re.search("M: (.*)", text))
+        telephone_work = self.if_regex_exist(re.search("W: (.*)", text))
+        telephone_fax = self.if_regex_exist(re.search("F: (.*)", text))
+        secondary_telephone_home = self.if_regex_exist(re.search("P: (.*)", text))
         id_contact = wd.find_element_by_name("id").get_attribute("value")
         return Contact(title=title,
                        telephone_home=telephone_home,
@@ -176,6 +192,7 @@ class ContactHelper:
                        telephone_work=telephone_work,
                        telephone_fax=telephone_fax,
                        secondary_telephone_home=secondary_telephone_home,
+                       emails_all=emails_all,
                        homepage=homepage,
                        id_contact=id_contact)
 

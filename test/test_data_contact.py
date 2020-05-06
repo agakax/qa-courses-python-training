@@ -24,19 +24,39 @@ def test_data_on_home_page(app):
     assert contact_from_home_page.first_name == contact_from_edit_page.first_name
     assert contact_from_home_page.last_name == contact_from_edit_page.last_name
     assert contact_from_home_page.address == contact_from_edit_page.address
-    assert contact_from_home_page.emails_all_from_home_page == merge_emails_like_on_home_page(
+    assert contact_from_home_page.emails_all == merge_emails(
         contact_from_edit_page)
-    assert clear_number(contact_from_home_page.telephones_all_from_home_page) == merge_phones_like_on_home_page(
+    assert clear_number(contact_from_home_page.telephones_all) == merge_phones_like_on_home_page(
         contact_from_edit_page)
 
 
-def test_phones_on_details_page(app):
-    contact_from_details_page = app.contact.get_contact_info_from_details_page(index=0)
-    contact_from_edit_page = app.contact.get_contact_info_from_edit_page(index=0)
+def test_data_on_details_page(app):
+    if app.contact.count() == 0:
+        app.contact.create(Contact(
+            first_name="Yuno",
+            middle_name="Sylph",
+            last_name="Orphan",
+            address=r"Clover Kingdom",
+            telephone_home=r"+81 (246) 246-114",
+            telephone_mobile=r"+81 (48) 8000-938",
+            telephone_fax=r"+81 (906) 2377-225",
+            email=r"yuno@clover.jp",
+            email3="goldendawn@clover.jp",
+            homepage=r"https://www.viz.com/black-clover",
+            secondary_telephone_home=r"+81-9067282833",
+        ))
+    index = randrange(app.contact.count())
+    contact_from_details_page = app.contact.get_contact_info_from_details_page(index=index)
+    contact_from_edit_page = app.contact.get_contact_info_from_edit_page(index=index)
+    assert contact_from_details_page.title == merge_name_like_on_details_page(contact_from_edit_page)
     assert contact_from_details_page.telephone_home == contact_from_edit_page.telephone_home
     assert contact_from_details_page.telephone_mobile == contact_from_edit_page.telephone_mobile
     assert contact_from_details_page.telephone_work == contact_from_edit_page.telephone_work
+    assert contact_from_details_page.telephone_fax == contact_from_edit_page.telephone_fax
     assert contact_from_details_page.secondary_telephone_home == contact_from_edit_page.secondary_telephone_home
+    assert "\n".join(contact_from_details_page.emails_all) == merge_emails(
+        contact_from_edit_page)
+    assert contact_from_details_page.homepage == contact_from_edit_page.homepage
 
 
 def clear_number(s):
@@ -52,5 +72,11 @@ def merge_phones_like_on_home_page(contact):
                                         contact.secondary_telephone_home]))))
 
 
-def merge_emails_like_on_home_page(contact):
-    return "\n".join(filter(lambda x: x != "" and x is not None, [contact.email, contact.email2, contact.email3]))
+def merge_emails(contact):
+    return "\n".join(filter(lambda x: x != "" and x is not None,
+                            map(lambda x: x.strip(), [contact.email, contact.email2, contact.email3])))
+
+
+def merge_name_like_on_details_page(contact):
+    return " ".join(
+        filter(lambda x: x != "" and x is not None, [contact.first_name, contact.middle_name, contact.last_name]))
