@@ -152,9 +152,7 @@ class ContactHelper:
                                                   last_name=last_name,
                                                   title=title,
                                                   address=address,
-                                                  email=all_emails[0],
-                                                  email2=all_emails[1],
-                                                  email3=all_emails[2],
+                                                  emails_all_from_home_page=all_emails,
                                                   telephones_all_from_home_page=all_phones,
                                                   id_contact=id_contact))
         return list(self.contact_cache)

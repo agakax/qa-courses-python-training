@@ -1,0 +1,56 @@
+import re
+from random import randrange
+from model.contact import Contact
+
+
+def test_data_on_home_page(app):
+    if app.contact.count() == 0:
+        app.contact.create(Contact(
+            first_name="Asta",
+            middle_name="Bakasta",
+            last_name="Orphan",
+            address=r"Clover Kingdom",
+            telephone_home=r"+81 (246) 246-114",
+            telephone_mobile=r"+81 (48) 8000-938",
+            telephone_fax=r"+81 (906) 2377-225",
+            email=r"asta@clover.jp",
+            email3="blackbull@clover.jp",
+            homepage=r"https://www.viz.com/black-clover",
+            secondary_telephone_home=r"+81-9067282833",
+        ))
+    index = randrange(app.contact.count())
+    contact_from_home_page = app.contact.get_contact_list()[index]
+    contact_from_edit_page = app.contact.get_contact_info_from_edit_page(index=index)
+    assert contact_from_home_page.first_name == contact_from_edit_page.first_name
+    assert contact_from_home_page.last_name == contact_from_edit_page.last_name
+    assert contact_from_home_page.address == contact_from_edit_page.address
+    assert contact_from_home_page.emails_all_from_home_page == merge_emails_like_on_home_page(
+        contact_from_edit_page)
+    assert clear_number(contact_from_home_page.telephones_all_from_home_page) == merge_phones_like_on_home_page(
+        contact_from_edit_page)
+
+
+def test_phones_on_details_page(app):
+    contact_from_details_page = app.contact.get_contact_info_from_details_page(index=0)
+    contact_from_edit_page = app.contact.get_contact_info_from_edit_page(index=0)
+    assert contact_from_details_page.telephone_home == contact_from_edit_page.telephone_home
+    assert contact_from_details_page.telephone_mobile == contact_from_edit_page.telephone_mobile
+    assert contact_from_details_page.telephone_work == contact_from_edit_page.telephone_work
+    assert contact_from_details_page.secondary_telephone_home == contact_from_edit_page.secondary_telephone_home
+
+
+def clear_number(s):
+    # returns only digits separated by new lines
+    return re.sub("[^0-9\n]", "", s)
+
+
+def merge_phones_like_on_home_page(contact):
+    return "\n".join(filter(lambda x: x != "",
+                            map(lambda x: clear_number(x),
+                                filter(lambda x: x is not None,
+                                       [contact.telephone_home, contact.telephone_mobile, contact.telephone_work,
+                                        contact.secondary_telephone_home]))))
+
+
+def merge_emails_like_on_home_page(contact):
+    return "\n".join(filter(lambda x: x != "" or x is not None, [contact.email, contact.email2, contact.email3]))
