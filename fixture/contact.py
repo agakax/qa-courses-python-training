@@ -145,8 +145,8 @@ class ContactHelper:
                 first_name = element.find_element_by_xpath("td[3]").text
                 last_name = element.find_element_by_xpath("td[2]").text
                 address = element.find_element_by_xpath("td[4]").text
-                all_emails = element.find_element_by_xpath("td[5]").text.splitlines()
-                all_phones = element.find_element_by_xpath("td[6]").text.splitlines()
+                all_emails = element.find_element_by_xpath("td[5]").text
+                all_phones = element.find_element_by_xpath("td[6]").text
                 id_contact = element.find_element_by_xpath("td[1]/input[@name='selected[]']").get_attribute("id")
                 self.contact_cache.append(Contact(first_name=first_name,
                                                   last_name=last_name,
@@ -155,10 +155,7 @@ class ContactHelper:
                                                   email=all_emails[0],
                                                   email2=all_emails[1],
                                                   email3=all_emails[2],
-                                                  telephone_home=all_phones[0],
-                                                  telephone_mobile=all_phones[1],
-                                                  telephone_work=all_phones[2],
-                                                  secondary_telephone_home=all_phones[3],
+                                                  telephones_all_from_home_page=all_phones,
                                                   id_contact=id_contact))
         return list(self.contact_cache)
 
