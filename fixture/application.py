@@ -13,8 +13,8 @@ class Application:
             self.wd = webdriver.Firefox(executable_path=r'C:\Windows\SysWOW64\geckodriver.exe')
         elif browser == "chrome":
             self.wd = webdriver.Chrome(executable_path=r'C:\Windows\SysWOW64\chromedriver.exe')
-        elif browser == "ie":
-            self.wd = webdriver.Ie(executable_path=r'C:\Windows\SysWOW64\IEDriverServer.exe')
+        elif browser == "edge":
+            self.wd = webdriver.Ie(executable_path=r'C:\Windows\SysWOW64\msedgedriver.exe')
         else:
             raise ValueError("Unrecognized browser %s" % browser)
         self.wd.implicitly_wait(5)
