@@ -1,4 +1,5 @@
 import pymysql.cursors
+from model.group import Group
 
 
 class DbFixture:
@@ -9,6 +10,18 @@ class DbFixture:
         self.user = user
         self.password = password
         self.connection = pymysql.connect(host=host, database=name, user=user, password=password)
+
+    def get_group_list(self):
+        cursor = self.connection.cursor()
+        groups = []
+        try:
+            cursor.execute("SELECT group_id, group_name, group_header, group_footer FROM group_list")
+            for row in cursor:
+                (id_group, name, header, footer) = row
+                groups.append(Group(id_group=str(id_group), name=name, header=header, footer=footer))
+        finally:
+            cursor.close()
+        return groups
 
     def destroy(self):
         self.connection.close()
