@@ -119,7 +119,54 @@ class ContactHelper:
         self.return_to_home_page()
         self.contact_cache = None
 
+    def open_edit_page(self, page_id):
+        wd = self.app.wd
+        url = "%s/edit.php?id=%s" % (self.app.base_url, page_id)
+        wd.get(url)
+
+    def modify_contact_by_id(self, contact):
+        self.app.open_home_page()
+        # select specific contact and open it (occurrences are counted from 0, xpath is counted from 1)
+        self.open_edit_page(contact.id)
+        # edit contact form
+        self.fill_contact_form(first_name=contact.first_name,
+                               middle_name=contact.middle_name,
+                               last_name=contact.last_name,
+                               nickname=contact.nickname,
+                               photo_path=contact.photo_path,
+                               photo_delete=contact.photo_delete,
+                               title=contact.title,
+                               company=contact.company,
+                               address=contact.address,
+                               telephone_home=contact.telephone_home,
+                               telephone_mobile=contact.telephone_mobile,
+                               telephone_work=contact.telephone_work,
+                               telephone_fax=contact.telephone_fax,
+                               email=contact.email,
+                               email2=contact.email2,
+                               email3=contact.email3,
+                               homepage=contact.homepage,
+                               birthday_day=contact.birthday_day,
+                               birthday_month=contact.birthday_month,
+                               birthday_year=contact.birthday_year,
+                               anniversary_day=contact.anniversary_day,
+                               anniversary_month=contact.anniversary_month,
+                               anniversary_year=contact.anniversary_year,
+                               group=None,
+                               secondary_address=contact.secondary_address,
+                               secondary_telephone_home=contact.secondary_telephone_home,
+                               secondary_notes=contact.secondary_notes)
+        # submit contact modification
+        self.app.select.element_by_xpath(field="input", field_type="name", field_value="update",
+                                         field_occurrence=2)
+        self.return_to_home_page()
+        self.contact_cache = None
+
     contact_cache = None
+
+    def select_contact_by_id(self, id_contact):
+        wd = self.app.wd
+        wd.find_element_by_css_selector("input[id='%s']" % str(id_contact)).click()
 
     def open_contact_details_page(self, index):
         self.app.open_home_page()
@@ -258,6 +305,19 @@ class ContactHelper:
         self.app.open_home_page()
         # select specific contact
         self.app.select.element_by_name_by_index(name="selected[]", index=index)
+        # submit deletion
+        self.app.select.element_by_xpath(field="input", field_type="value", field_value="Delete")
+        wd.switch_to_alert().accept()
+        # waiting for it to be sure deleting went fully
+        wd.find_element_by_css_selector("div.msgbox")
+        self.app.open_home_page()
+        self.contact_cache = None
+
+    def delete_contact_by_id(self, id_contact):
+        wd = self.app.wd
+        self.app.open_home_page()
+        # select specific contact
+        self.select_contact_by_id(id_contact)
         # submit deletion
         self.app.select.element_by_xpath(field="input", field_type="value", field_value="Delete")
         wd.switch_to_alert().accept()

@@ -1,47 +1,18 @@
-from random import randrange
+import random
 from model.contact import Contact
 
 
-def test_modify_first_contact(app):
-    if app.contact.count() == 0:
+def test_modify_contact(app, db, json_contact):
+    if len(db.get_contact_list()) == 0:
         app.contact.create(Contact(first_name="test1"))
-    old_contacts = app.contact.get_contact_list()
-    contact = Contact(
-        first_name="Lev",
-        middle_name="Nikolayevich",
-        last_name="Tolstoy",
-        photo_path=r"C:\Users\agakax\Downloads\avatar.png",
-        address=r"Yasnaya Polyana",
-        birthday_day="9",
-        birthday_month="September",
-        birthday_year="1828",
-        anniversary_day="20",
-        anniversary_month="November",
-        anniversary_year="1910")
-    index = randrange(len(old_contacts))
-    contact.id = old_contacts[index].id
-    app.contact.modify_contact_by_index(index=index, contact=contact)
-    assert len(old_contacts) == app.contact.count()
-    new_contacts = app.contact.get_contact_list()
-    old_contacts[index] = contact
+    old_contacts = db.get_contact_list()
+    contact_to_modify = random.choice(old_contacts)
+    contact = json_contact
+    contact.id = contact_to_modify.id
+    app.contact.modify_contact_by_id(contact=contact)
+    assert len(old_contacts) == len(db.get_contact_list())
+    new_contacts = db.get_contact_list()
+    old_contacts.remove(contact_to_modify)
+    old_contacts.append(contact)
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
 
-
-def test_modify_first_contact_with_photo_deletion(app):
-    if app.contact.count() == 0:
-        app.contact.create(Contact(nickname="test2"))
-    old_contacts = app.contact.get_contact_list()
-    app.contact.modify_first_contact(Contact(
-        first_name="Jan",
-        last_name="Brzechwa",
-        photo_delete=True,
-        address=r"Kresy Wschodnie",
-        birthday_day="15",
-        birthday_month="August",
-        birthday_year="1898",
-        anniversary_day="2",
-        anniversary_month="July",
-        anniversary_year="1966",
-    ))
-    new_contacts = app.contact.get_contact_list()
-    assert len(old_contacts) == len(new_contacts)
