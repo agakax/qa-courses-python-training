@@ -47,7 +47,7 @@ class GroupHelper:
 
     def modify_group_by_index(self, index, group):
         self.open_groups_page()
-        # find first group and open it
+        # find specific group and open it
         self.app.select.element_by_name_by_index(name="selected[]", index=index)
         self.app.select.element_by_xpath(field="input", field_type="name", field_value="edit",
                                          field_occurrence=2)
@@ -58,6 +58,23 @@ class GroupHelper:
         self.return_to_groups_page()
         self.group_cache = None
 
+    def modify_group_by_id(self, group):
+        self.open_groups_page()
+        # find specific group and open it
+        self.select_group_by_id(group.id)
+        self.app.select.element_by_xpath(field="input", field_type="name", field_value="edit",
+                                         field_occurrence=2)
+        # edit group form
+        self.fill_group_form(name=group.name, header=group.header, footer=group.footer)
+        # submit group modification
+        self.app.select.element_by_name(name="update")
+        self.return_to_groups_page()
+        self.group_cache = None
+
+    def select_group_by_id(self, id_group):
+        wd = self.app.wd
+        wd.find_element_by_css_selector("input[value='%s']" % str(id_group)).click()
+
     def delete_first_group(self):
         self.delete_group_by_index(0)
 
@@ -65,6 +82,15 @@ class GroupHelper:
         self.open_groups_page()
         # select specific group
         self.app.select.element_by_name_by_index(name="selected[]", index=index)
+        # submit deletion
+        self.app.select.element_by_name(name="delete")
+        self.return_to_groups_page()
+        self.group_cache = None
+
+    def delete_group_by_id(self, id_group):
+        self.open_groups_page()
+        # select specific group
+        self.select_group_by_id(id_group=id_group)
         # submit deletion
         self.app.select.element_by_name(name="delete")
         self.return_to_groups_page()
