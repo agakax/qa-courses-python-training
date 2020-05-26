@@ -26,8 +26,8 @@ def test_data_on_home_page(app):
     assert contact_from_home_page.address == contact_from_edit_page.address
     assert contact_from_home_page.emails_all == merge_emails(
         contact_from_edit_page)
-    assert clear_number(contact_from_home_page.telephones_all) == merge_phones_like_on_home_page(
-        contact_from_edit_page)
+    assert clear_number(contact_from_home_page.telephones_all).strip() == merge_phones_like_on_home_page(
+        contact_from_edit_page).strip()
 
 
 def test_data_on_details_page(app):
