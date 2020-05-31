@@ -1,5 +1,6 @@
 import re
 from model.contact import Contact
+from selenium.webdriver.support.select import Select
 
 
 class ContactHelper:
@@ -137,6 +138,26 @@ class ContactHelper:
         # as normally we're indexing from 0, and xpath is indexing from 1 I made such change
         self.app.select.element_by_xpath(field="img", field_type="title", field_value="Edit",
                                          field_occurrence=index + 1)
+
+    def open_contacts_in_group_page(self, group_id):
+        wd = self.app.wd
+        url = "%s/?group=%s" % (self.app.base_url, group_id)
+        wd.get(url)
+
+    def add_contact_to_group(self, contact_id, group_id):
+        wd = self.app.wd
+        self.app.open_home_page()
+        self.select_contact_by_id(id_contact=contact_id)
+        Select(wd.find_element_by_name("to_group")).select_by_value(group_id)
+        self.app.select.element_by_name("add")
+        self.open_contacts_in_group_page(group_id=group_id)
+
+    def remove_contact_from_group(self, contact_id, group_id):
+        self.open_contacts_in_group_page(group_id=group_id)
+        self.select_contact_by_id(contact_id)
+        self.app.select.element_by_name("remove")
+        self.open_contacts_in_group_page(group_id=group_id)
+
 
     def get_contact_list(self):
         if self.contact_cache is None:
