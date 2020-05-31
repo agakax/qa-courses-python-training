@@ -3,6 +3,21 @@ from random import randrange
 from model.contact import Contact
 
 
+def test_data_for_all_contacts_on_home_page(app, db, json_contact):
+    if len(db.get_contact_list()) == 0:
+        app.contact.create(json_contact)
+    db_all_contacts = sorted(db.get_contact_list(), key=Contact.id_or_max)
+    ui_all_contacts = sorted(app.contact.get_contact_list(), key=Contact.id_or_max)
+    assert len(db_all_contacts) == len(ui_all_contacts)
+    for x,y in zip(db_all_contacts, ui_all_contacts):
+        assert str(x.id) == y.id
+        assert x.first_name == y.first_name
+        assert x.last_name == y.last_name
+        assert x.address == y.address
+        assert merge_emails(x) == y.emails_all
+        assert merge_phones_like_on_home_page(x).strip() == clear_number(y.telephones_all).strip()
+
+
 def test_data_on_home_page(app):
     if app.contact.count() == 0:
         app.contact.create(Contact(
